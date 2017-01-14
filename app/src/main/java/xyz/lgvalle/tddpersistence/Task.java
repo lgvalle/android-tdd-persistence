@@ -7,8 +7,8 @@ import java.util.Date;
  */
 
 public class Task {
-    String name;
-    Date expiration;
+    private String name;
+    private Date expiration;
 
     public Task(String name, Date expiration) {
         this.name = name;

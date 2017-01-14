@@ -6,12 +6,14 @@ package xyz.lgvalle.tddpersistence;
 
 public class MainActivityPresenter {
 
+    private final TaskRepository taskRepository;
 
-
-    public void save(Task task) {
-
+    public MainActivityPresenter(TaskRepository taskRepository) {
+        this.taskRepository = taskRepository;
     }
 
-
+    public void save(Task task) {
+        taskRepository.persist(task);
+    }
 
 }
