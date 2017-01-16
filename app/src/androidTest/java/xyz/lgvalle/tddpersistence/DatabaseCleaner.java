@@ -8,13 +8,10 @@ import xyz.lgvalle.tddpersistence.db.TaskReaderDbHelper;
 
 import static xyz.lgvalle.tddpersistence.db.TaskReaderContract.*;
 
-/**
- * Created by lgvalle on 08/01/2017.
- */
-
 public class DatabaseCleaner {
 
     private static final String[] TABLES = {
+            // Add tables to delete here
             TaskEntry.TABLE_NAME
     };
 

@@ -1,6 +1,5 @@
 package xyz.lgvalle.tddpersistence;
 
-import java.text.SimpleDateFormat;
 import java.util.Date;
 
 /**
@@ -10,9 +9,13 @@ import java.util.Date;
 public class TaskMapper {
 
     public TaskDBModel fromDomain(Task task) {
+        Date expiration = task.getExpiration();
+        if (expiration == null) {
+            expiration = new Date();
+        }
         return new TaskDBModel(
                 task.getName(),
-                task.getExpiration().getTime()
+                expiration.getTime()
         );
     }
 

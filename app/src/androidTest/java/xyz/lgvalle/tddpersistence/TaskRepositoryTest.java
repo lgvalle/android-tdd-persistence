@@ -4,8 +4,6 @@ import android.content.Context;
 import android.support.test.InstrumentationRegistry;
 import android.support.test.runner.AndroidJUnit4;
 
-import junit.framework.Assert;
-
 import org.hamcrest.Matcher;
 import org.junit.Before;
 import org.junit.Test;
@@ -13,15 +11,11 @@ import org.junit.runner.RunWith;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.Arrays;
 import java.util.Date;
-import java.util.List;
 
 import xyz.lgvalle.tddpersistence.db.TaskReaderDbHelper;
 
 import static org.hamcrest.Matchers.containsInAnyOrder;
-import static org.hamcrest.Matchers.equalTo;
-import static org.hamcrest.Matchers.samePropertyValuesAs;
 import static org.junit.Assert.assertThat;
 import static xyz.lgvalle.tddpersistence.TaskNamedMatcher.aTaskNamed;
 import static xyz.lgvalle.tddpersistence.TaskRepositoryTest.TaskBuilder.aTask;
@@ -32,9 +26,6 @@ public class TaskRepositoryTest {
     private static SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
     private TaskRepository taskRepository;
 
-    List<TestBuilder<Task>> persistentObjectBuilders = Arrays.<TestBuilder<Task>>asList(
-            aTask().withName("A task").withExpirationDate("2017-03-16")
-    );
 
     @Before
     public void setUp() throws Exception {
@@ -48,16 +39,6 @@ public class TaskRepositoryTest {
 
         DatabaseCleaner cleaner = new DatabaseCleaner(dbHelper);
         cleaner.clean();
-    }
-
-    @Test
-    public void canSaveTask() {
-
-        Task task = aTask().withName("Task 1").withExpirationDate("2017-01-31").build();
-
-        taskRepository.persist(task);
-
-        Assert.assertTrue(false);
     }
 
     @Test
@@ -79,35 +60,9 @@ public class TaskRepositoryTest {
         );
     }
 
-    @Test
-    public void roundTripsPersistentObjects() {
-        for (TestBuilder builder: persistentObjectBuilders) {
-            assertCanBePersisted(builder);
-        }
-    }
-
-    private void assertCanBePersisted(TestBuilder builder) {
-        assertReloadsWithSameStateAs(persistedObjectFrom(builder));
-    }
-
-    private void assertReloadsWithSameStateAs(Task original) {
-        Task savedTask = taskRepository.taskWithName(original.getName());
-
-        // Without reflection this can fail:
-        // If a new field is added without including it on the equals method and it is wrongly mapped this matcher won't pick it up.
-        assertThat(savedTask, equalTo(original));
-    }
-
-    private Task persistedObjectFrom(TestBuilder builder) {
-        Task original = (Task) builder.build();
-        taskRepository.persist(original);
-        return original;
-
-    }
-
     private void addTasks(final TaskBuilder... tasks) throws Exception {
         for (TaskBuilder task : tasks) {
-            taskRepository.persist(task.build());
+            taskRepository.persistTask(task.build());
         }
     }
 

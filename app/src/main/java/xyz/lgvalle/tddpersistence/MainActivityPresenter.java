@@ -13,7 +13,7 @@ public class MainActivityPresenter {
     }
 
     public void save(Task task) {
-        taskRepository.persist(task);
+        taskRepository.persistTask(task);
     }
 
 }

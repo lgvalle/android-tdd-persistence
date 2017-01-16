@@ -12,7 +12,7 @@ public class AndroidTransactor {
     private static final String TAG = AndroidTransactor.class.getSimpleName();
 
     public interface UnitOfWork {
-        void work() throws Exception;
+        void work(SQLiteDatabase db) throws Exception;
     }
 
 
@@ -22,19 +22,19 @@ public class AndroidTransactor {
         this.dbHelper = dbHelper;
     }
 
-    public void perform(UnitOfWork unitOfWork) throws Exception {
+    public void perform(UnitOfWork unitOfWork)  {
         SQLiteDatabase db = dbHelper.getWritableDatabase();
 
         db.beginTransaction();
         try {
-            unitOfWork.work();
+            unitOfWork.work(db);
             db.setTransactionSuccessful();
         } catch (Exception e) {
             Log.d(TAG, e.getMessage());
-            throw e;
         } finally {
             db.endTransaction();
         }
+        db.close();
     }
 
 }

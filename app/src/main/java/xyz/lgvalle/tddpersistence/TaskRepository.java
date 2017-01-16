@@ -6,12 +6,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-/**
- * Created by lgvalle on 08/01/2017.
- */
-
 public class TaskRepository {
-
     private final TaskMapper taskMapper;
     private final TaskStorage taskDBStorage;
 
@@ -20,7 +15,7 @@ public class TaskRepository {
         this.taskDBStorage = taskDBStorage;
     }
 
-    public void persist(Task task) {
+    public void persistTask(Task task) {
         TaskDBModel taskDBModel = taskMapper.fromDomain(task);
         taskDBStorage.insert(taskDBModel);
     }
