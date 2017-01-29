@@ -70,16 +70,27 @@ public class TaskRepositoryTest {
         assertTasksExpiringOn(deadline,
                 containsInAnyOrder(
                         aTaskNamed("Task 2 (Expired)"),
-                        aTaskNamed("Task 5 (Expired)"))
+                        aTaskNamed("Task 5 (Expired)")
+                )
         );
     }
 
     private void addTasksToList(ListBuilder listBuilder, final TaskBuilder... tasks) throws Exception {
-        List persistedList = persisted(listBuilder);
-        for (TaskBuilder task : tasks) {
-            TaskBuilder aTask = task.forList(persistedList);
-            taskRepository.persistTask(aTask.build());
+        for (TaskBuilder taskBuilder : tasks) {
+            Task task = taskBuilder.forList(persisted(listBuilder)).build();
+            taskRepository.persistTask(task);
         }
+    }
+
+    private TestBuilder<List> persisted(final ListBuilder listBuilder) {
+        return new TestBuilder<List>() {
+            @Override
+            public List build() {
+                List list = listBuilder.build();
+                listRepository.persistList(list);
+                return list;
+            }
+        };
     }
 
     private void assertTasksExpiringOn(String deadline, Matcher<Iterable<? extends Task>> taskMatcher) throws ParseException {
@@ -87,17 +98,11 @@ public class TaskRepositoryTest {
         assertThat(taskRepository.tasksExpiredBy(date), taskMatcher);
     }
 
-    private List persisted(ListBuilder listBuilder) {
-        List list = listBuilder.build();
-        listRepository.persistList(list);
-        return list;
-    }
-
     public static class TaskBuilder implements TestBuilder<Task> {
 
         private String name;
         private Date date;
-        private String listName;
+        private TestBuilder<List> listBuilder;
 
         public static TaskBuilder aTask() {
             return new TaskBuilder();
@@ -119,14 +124,15 @@ public class TaskRepositoryTest {
             return this;
         }
 
-        public TaskBuilder forList(List list) {
-            this.listName = list.getListName();
+        public TaskBuilder forList(TestBuilder<List> listBuilder) {
+            this.listBuilder = listBuilder;
             return this;
         }
 
         @Override
         public Task build() {
-            return new Task(name, date, listName);
+            List list = listBuilder.build();
+            return new Task(name, date, list.getListName());
         }
     }
 

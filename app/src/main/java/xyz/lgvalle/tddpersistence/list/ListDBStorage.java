@@ -31,7 +31,7 @@ public class ListDBStorage implements ListStorage {
 
         ContentValues values = toContentValues(list);
 
-        db.insertOrThrow(TABLE_NAME, null, values);
+        db.insert(TABLE_NAME, null, values);
 
         closeDB();
     }
