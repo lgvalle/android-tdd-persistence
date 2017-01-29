@@ -10,7 +10,7 @@ public class TaskRepository {
     private final TaskMapper taskMapper;
     private final TaskStorage taskDBStorage;
 
-    public TaskRepository(TaskMapper taskMapper, TaskDBStorage taskDBStorage) {
+    public TaskRepository(TaskMapper taskMapper, TaskStorage taskDBStorage) {
         this.taskMapper = taskMapper;
         this.taskDBStorage = taskDBStorage;
     }
@@ -22,13 +22,16 @@ public class TaskRepository {
 
     public List<Task> tasksExpiredBy(Date date) {
         long expirationDate = date.getTime();
-
         return dbTasksToDomain(taskDBStorage.findAllExpiredBy(expirationDate));
     }
 
     public Task taskWithName(String taskName) {
         TaskDBModel taskDBModel = taskDBStorage.findByName(taskName);
         return taskMapper.toDomain(taskDBModel);
+    }
+
+    public List<Task> allTasks() {
+        return dbTasksToDomain(taskDBStorage.findAll());
     }
 
     @NonNull

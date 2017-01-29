@@ -34,7 +34,7 @@ public class TaskDBStorage implements TaskStorage {
 
         ContentValues values = toContentValues(taskDBModel);
 
-        long newRowId = db.insertOrThrow(TABLE_NAME, null, values);
+        db.insertOrThrow(TABLE_NAME, null, values);
 
         closeDB();
     }
@@ -66,18 +66,13 @@ public class TaskDBStorage implements TaskStorage {
     public List<TaskDBModel> findAllExpiredBy(long expirationDate) {
         SQLiteDatabase db = openDB();
 
-        String[] projection = {
-                COLUMN_TASK_NAME,
-                COLUMN_TASK_EXPIRATION
-        };
-
         String selection = COLUMN_TASK_EXPIRATION + " < ?";
         String[] selectionArgs = {String.valueOf(expirationDate)};
 
 
         Cursor cursor = db.query(
                 TABLE_NAME,                     // The table to query
-                projection,                               // The columns to return
+                dbProjection(),                               // The columns to return
                 selection,                                // The columns for the WHERE clause
                 selectionArgs,                            // The values for the WHERE clause
                 null,                                     // don't group the rows
@@ -85,6 +80,17 @@ public class TaskDBStorage implements TaskStorage {
                 null
         );
 
+        return toTaskDBModels(cursor);
+    }
+
+    private String[] dbProjection() {
+        return new String[]{
+                COLUMN_TASK_NAME,
+                COLUMN_TASK_EXPIRATION
+        };
+    }
+
+    private List<TaskDBModel> toTaskDBModels(Cursor cursor) {
         List<TaskDBModel> tasks = new ArrayList<>();
         while (cursor.moveToNext()) {
             String name = cursor.getString(cursor.getColumnIndexOrThrow(COLUMN_TASK_NAME));
@@ -93,18 +99,29 @@ public class TaskDBStorage implements TaskStorage {
         }
         cursor.close();
         closeDB();
-
         return tasks;
+    }
+
+    @Override
+    public List<TaskDBModel> findAll() {
+        SQLiteDatabase db = openDB();
+
+        Cursor cursor = db.query(
+                TABLE_NAME,                     // The table to query
+                dbProjection(),                               // The columns to return
+                null,                                // The columns for the WHERE clause
+                null,                            // The values for the WHERE clause
+                null,                                     // don't group the rows
+                null,                                     // don't filter by row groups
+                null
+        );
+
+        return toTaskDBModels(cursor);
     }
 
     @Override
     public TaskDBModel findByName(String taskName) {
         SQLiteDatabase db = openDB();
-
-        String[] projection = {
-                COLUMN_TASK_NAME,
-                COLUMN_TASK_EXPIRATION
-        };
 
         String selection = COLUMN_TASK_NAME + " == ?";
         String[] selectionArgs = {taskName};
@@ -112,7 +129,7 @@ public class TaskDBStorage implements TaskStorage {
 
         Cursor cursor = db.query(
                 TABLE_NAME,                     // The table to query
-                projection,                               // The columns to return
+                dbProjection(),                               // The columns to return
                 selection,                                // The columns for the WHERE clause
                 selectionArgs,                            // The values for the WHERE clause
                 null,                                     // don't group the rows

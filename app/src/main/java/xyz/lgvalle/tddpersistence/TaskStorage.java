@@ -11,6 +11,8 @@ public interface TaskStorage {
     void delete(TaskDBModel taskDBModel);
 
     List<TaskDBModel> findAllExpiredBy(long expirationDate);
+    
+    List<TaskDBModel> findAll();
 
     TaskDBModel findByName(String taskName);
 }
