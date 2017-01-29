@@ -4,15 +4,18 @@ import android.database.sqlite.SQLiteDatabase;
 
 import java.sql.SQLException;
 
+import xyz.lgvalle.tddpersistence.db.ListReaderContract;
 import xyz.lgvalle.tddpersistence.db.TaskReaderDbHelper;
 
+import static xyz.lgvalle.tddpersistence.db.ListReaderContract.*;
 import static xyz.lgvalle.tddpersistence.db.TaskReaderContract.*;
 
 public class DatabaseCleaner {
 
     private static final String[] TABLES = {
             // Add tables to delete here
-            TaskEntry.TABLE_NAME
+            TaskEntry.TABLE_NAME,
+            ListEntry.TABLE_NAME
     };
 
     private final TaskReaderDbHelper dbHelper;

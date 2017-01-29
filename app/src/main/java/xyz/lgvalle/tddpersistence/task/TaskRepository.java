@@ -8,30 +8,30 @@ import java.util.List;
 
 public class TaskRepository {
     private final TaskMapper taskMapper;
-    private final TaskStorage taskDBStorage;
+    private final TaskStorage taskStorage;
 
-    public TaskRepository(TaskMapper taskMapper, TaskStorage taskDBStorage) {
+    public TaskRepository(TaskMapper taskMapper, TaskStorage taskStorage) {
         this.taskMapper = taskMapper;
-        this.taskDBStorage = taskDBStorage;
+        this.taskStorage = taskStorage;
     }
 
     public void persistTask(Task task) {
         TaskDBModel taskDBModel = taskMapper.fromDomain(task);
-        taskDBStorage.insert(taskDBModel);
+        taskStorage.insert(taskDBModel);
     }
 
     public List<Task> tasksExpiredBy(Date date) {
         long expirationDate = date.getTime();
-        return dbTasksToDomain(taskDBStorage.findAllExpiredBy(expirationDate));
+        return dbTasksToDomain(taskStorage.findAllExpiredBy(expirationDate));
     }
 
     public Task taskWithName(String taskName) {
-        TaskDBModel taskDBModel = taskDBStorage.findByName(taskName);
+        TaskDBModel taskDBModel = taskStorage.findByName(taskName);
         return taskMapper.toDomain(taskDBModel);
     }
 
     public List<Task> allTasks() {
-        return dbTasksToDomain(taskDBStorage.findAll());
+        return dbTasksToDomain(taskStorage.findAll());
     }
 
     @NonNull

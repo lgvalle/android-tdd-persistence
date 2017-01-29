@@ -12,15 +12,15 @@ public class TaskMapper {
         }
         return new TaskDBModel(
                 task.getName(),
-                expiration.getTime()
-        );
+                expiration.getTime(),
+                task.getListName());
     }
 
     public Task toDomain(TaskDBModel taskDBModel) {
         return new Task(
                 taskDBModel.getName(),
-                new Date(taskDBModel.getExpiration())
-        );
+                new Date(taskDBModel.getExpiration()),
+                taskDBModel.getListName());
     }
 
 }

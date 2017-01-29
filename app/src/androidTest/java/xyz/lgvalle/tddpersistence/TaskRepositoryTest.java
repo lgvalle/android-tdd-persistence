@@ -13,15 +13,21 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
+import xyz.lgvalle.tddpersistence.db.ListRepository;
 import xyz.lgvalle.tddpersistence.db.TaskReaderDbHelper;
+import xyz.lgvalle.tddpersistence.list.List;
+import xyz.lgvalle.tddpersistence.list.ListDBStorage;
+import xyz.lgvalle.tddpersistence.list.ListStorage;
 import xyz.lgvalle.tddpersistence.task.Task;
 import xyz.lgvalle.tddpersistence.task.TaskDBStorage;
 import xyz.lgvalle.tddpersistence.task.TaskMapper;
 import xyz.lgvalle.tddpersistence.task.TaskRepository;
+import xyz.lgvalle.tddpersistence.task.TaskStorage;
 
 import static org.hamcrest.Matchers.containsInAnyOrder;
 import static org.junit.Assert.assertThat;
 import static xyz.lgvalle.tddpersistence.TaskNamedMatcher.aTaskNamed;
+import static xyz.lgvalle.tddpersistence.TaskRepositoryTest.ListBuilder.aList;
 import static xyz.lgvalle.tddpersistence.TaskRepositoryTest.TaskBuilder.aTask;
 
 
@@ -29,17 +35,20 @@ import static xyz.lgvalle.tddpersistence.TaskRepositoryTest.TaskBuilder.aTask;
 public class TaskRepositoryTest {
     private static SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
     private TaskRepository taskRepository;
-
+    private ListRepository listRepository;
 
     @Before
     public void setUp() throws Exception {
         Context appContext = InstrumentationRegistry.getTargetContext();
 
         TaskReaderDbHelper dbHelper = new TaskReaderDbHelper(appContext);
-        TaskDBStorage storage = new TaskDBStorage(dbHelper);
+        TaskStorage taskStorage = new TaskDBStorage(dbHelper);
         TaskMapper mapper = new TaskMapper();
 
-        taskRepository = new TaskRepository(mapper, storage);
+        taskRepository = new TaskRepository(mapper, taskStorage);
+
+        ListStorage listStorage = new ListDBStorage(dbHelper);
+        listRepository = new ListRepository(listStorage);
 
         DatabaseCleaner cleaner = new DatabaseCleaner(dbHelper);
         cleaner.clean();
@@ -49,7 +58,8 @@ public class TaskRepositoryTest {
     public void findsExpiredTasks() throws Exception {
         String deadline = "2017-01-14";
 
-        addTasks(
+        addTasksToList(
+                aList().withName("TODO LIST"),
                 aTask().withName("Task 1 (-Valid-)").withExpirationDate("2017-01-31"),
                 aTask().withName("Task 2 (Expired)").withExpirationDate("2017-01-01"),
                 aTask().withName("Task 3 (-Valid-)").withExpirationDate("2017-02-11"),
@@ -64,9 +74,11 @@ public class TaskRepositoryTest {
         );
     }
 
-    private void addTasks(final TaskBuilder... tasks) throws Exception {
+    private void addTasksToList(ListBuilder listBuilder, final TaskBuilder... tasks) throws Exception {
+        List persistedList = persisted(listBuilder);
         for (TaskBuilder task : tasks) {
-            taskRepository.persistTask(task.build());
+            TaskBuilder aTask = task.forList(persistedList);
+            taskRepository.persistTask(aTask.build());
         }
     }
 
@@ -75,10 +87,17 @@ public class TaskRepositoryTest {
         assertThat(taskRepository.tasksExpiredBy(date), taskMatcher);
     }
 
+    private List persisted(ListBuilder listBuilder) {
+        List list = listBuilder.build();
+        listRepository.persistList(list);
+        return list;
+    }
+
     public static class TaskBuilder implements TestBuilder<Task> {
 
         private String name;
         private Date date;
+        private String listName;
 
         public static TaskBuilder aTask() {
             return new TaskBuilder();
@@ -100,11 +119,32 @@ public class TaskRepositoryTest {
             return this;
         }
 
-        @Override
-        public Task build() {
-            return new Task(name, date);
+        public TaskBuilder forList(List list) {
+            this.listName = list.getListName();
+            return this;
         }
 
+        @Override
+        public Task build() {
+            return new Task(name, date, listName);
+        }
+    }
 
+    public static class ListBuilder implements TestBuilder<List> {
+        private String name;
+
+        public static ListBuilder aList() {
+            return new ListBuilder();
+        }
+
+        public ListBuilder withName(String name) {
+            this.name = name;
+            return this;
+        }
+
+        @Override
+        public List build() {
+            return new List(name);
+        }
     }
 }

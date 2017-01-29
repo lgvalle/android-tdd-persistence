@@ -68,7 +68,7 @@ public class MainActivity extends AppCompatActivity {
             date = null;
         }
 
-        return new Task(taskEditTitle.getText().toString(), date);
+        return new Task(taskEditTitle.getText().toString(), date, "Main List");
     }
 
     private void refreshUI() {

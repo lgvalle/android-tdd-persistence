@@ -3,6 +3,7 @@ package xyz.lgvalle.tddpersistence.db;
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
+import android.os.Build;
 
 import xyz.lgvalle.tddpersistence.db.TaskReaderContract.TaskEntry;
 
@@ -18,13 +19,12 @@ public class TaskReaderDbHelper extends SQLiteOpenHelper {
                     TaskEntry._ID + " INTEGER PRIMARY KEY," +
                     TaskEntry.COLUMN_TASK_NAME + " TEXT," +
                     TaskEntry.COLUMN_TASK_EXPIRATION + " INTEGER," +
-                    TaskEntry.COLUMN_TASK_LIST + " INTEGER)";
-//    "FOREIGN KEY("+TaskEntry.COLUMN_TASK_LIST+") REFERENCES lists(_id) )";
+                    TaskEntry.COLUMN_TASK_LIST + " TEXT NOT NULL, " +
+                    "FOREIGN KEY(`" + TaskEntry.COLUMN_TASK_LIST + "`) REFERENCES lists(name) ON DELETE CASCADE)";
 
     private static final String SQL_CREATE_TABLE_LISTS =
             "CREATE TABLE " + ListEntry.TABLE_NAME + " (" +
-                    ListEntry._ID + " INTEGER PRIMARY KEY," +
-                    ListEntry.COLUMN_LIST_NAME + " TEXT)";
+                    ListEntry.COLUMN_LIST_NAME + " TEXT PRIMARY KEY)";
 
     private static final String SQL_DELETE_TABLE_TASKS =
             "DROP TABLE IF EXISTS " + TaskEntry.TABLE_NAME;
@@ -39,6 +39,16 @@ public class TaskReaderDbHelper extends SQLiteOpenHelper {
     public void onCreate(SQLiteDatabase db) {
         db.execSQL(SQL_CREATE_TABLE_TASKS);
         db.execSQL(SQL_CREATE_TABLE_LISTS);
+    }
+
+    @Override
+    public void onConfigure(SQLiteDatabase db) {
+        super.onConfigure(db);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
+            db.setForeignKeyConstraintsEnabled(true);
+        } else {
+            db.execSQL("PRAGMA foreign_keys=ON;");
+        }
     }
 
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {

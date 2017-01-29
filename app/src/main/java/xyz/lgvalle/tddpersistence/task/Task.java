@@ -3,12 +3,14 @@ package xyz.lgvalle.tddpersistence.task;
 import java.util.Date;
 
 public class Task {
-    private String name;
-    private Date expiration;
+    private final String name;
+    private final Date expiration;
+    private final String listName;
 
-    public Task(String name, Date expiration) {
+    public Task(String name, Date expiration, String listName) {
         this.name = name;
         this.expiration = expiration;
+        this.listName = listName;
     }
 
     public String getName() {
@@ -19,6 +21,10 @@ public class Task {
         return expiration;
     }
 
+    public String getListName() {
+        return listName;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -27,7 +33,9 @@ public class Task {
         Task task = (Task) o;
 
         if (name != null ? !name.equals(task.name) : task.name != null) return false;
-        return expiration != null ? expiration.equals(task.expiration) : task.expiration == null;
+        if (expiration != null ? !expiration.equals(task.expiration) : task.expiration != null)
+            return false;
+        return listName != null ? listName.equals(task.listName) : task.listName == null;
 
     }
 
@@ -35,6 +43,7 @@ public class Task {
     public int hashCode() {
         int result = name != null ? name.hashCode() : 0;
         result = 31 * result + (expiration != null ? expiration.hashCode() : 0);
+        result = 31 * result + (listName != null ? listName.hashCode() : 0);
         return result;
     }
 }

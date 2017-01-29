@@ -4,10 +4,12 @@ public class TaskDBModel {
 
     private final String name;
     private final long expiration;
+    private final String listName;
 
-    public TaskDBModel(String name, long expiration) {
+    public TaskDBModel(String name, long expiration, String listName) {
         this.name = name;
         this.expiration = expiration;
+        this.listName = listName;
     }
 
     public String getName() {
@@ -16,5 +18,9 @@ public class TaskDBModel {
 
     public long getExpiration() {
         return expiration;
+    }
+
+    public String getListName() {
+        return listName;
     }
 }

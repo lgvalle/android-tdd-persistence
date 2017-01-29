@@ -3,7 +3,6 @@ package xyz.lgvalle.tddpersistence.task;
 import android.content.ContentValues;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
-import android.support.annotation.NonNull;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -56,6 +55,7 @@ public class TaskDBStorage implements TaskStorage {
         ContentValues values = new ContentValues();
         values.put(COLUMN_TASK_NAME, taskDBModel.getName());
         values.put(COLUMN_TASK_EXPIRATION, taskDBModel.getExpiration());
+        values.put(COLUMN_TASK_LIST, taskDBModel.getListName());
         return values;
     }
 
@@ -83,7 +83,8 @@ public class TaskDBStorage implements TaskStorage {
     private String[] dbProjection() {
         return new String[]{
                 COLUMN_TASK_NAME,
-                COLUMN_TASK_EXPIRATION
+                COLUMN_TASK_EXPIRATION,
+                COLUMN_TASK_LIST
         };
     }
 
@@ -92,7 +93,8 @@ public class TaskDBStorage implements TaskStorage {
         while (cursor.moveToNext()) {
             String name = cursor.getString(cursor.getColumnIndexOrThrow(COLUMN_TASK_NAME));
             long expiration = cursor.getLong(cursor.getColumnIndexOrThrow(COLUMN_TASK_EXPIRATION));
-            tasks.add(new TaskDBModel(name, expiration));
+            String listName = cursor.getString(cursor.getColumnIndexOrThrow(COLUMN_TASK_LIST));
+            tasks.add(new TaskDBModel(name, expiration, listName));
         }
         cursor.close();
         closeDB();
@@ -138,7 +140,8 @@ public class TaskDBStorage implements TaskStorage {
         while (cursor.moveToNext()) {
             String name = cursor.getString(cursor.getColumnIndexOrThrow(COLUMN_TASK_NAME));
             long expiration = cursor.getLong(cursor.getColumnIndexOrThrow(COLUMN_TASK_EXPIRATION));
-            task = new TaskDBModel(name, expiration);
+            String listName = cursor.getString(cursor.getColumnIndexOrThrow(COLUMN_TASK_LIST));
+            task = new TaskDBModel(name, expiration, listName);
         }
         cursor.close();
         closeDB();
