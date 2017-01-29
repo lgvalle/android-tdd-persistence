@@ -14,9 +14,6 @@ import xyz.lgvalle.tddpersistence.db.TaskReaderDbHelper;
 import static xyz.lgvalle.tddpersistence.db.TaskReaderContract.*;
 import static xyz.lgvalle.tddpersistence.db.TaskReaderContract.TaskEntry.*;
 
-/**
- * Created by lgvalle on 08/01/2017.
- */
 
 public class TaskDBStorage implements TaskStorage {
 

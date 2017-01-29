@@ -2,10 +2,6 @@ package xyz.lgvalle.tddpersistence;
 
 import java.util.Date;
 
-/**
- * Created by lgvalle on 08/01/2017.
- */
-
 public class Task {
     private String name;
     private Date expiration;

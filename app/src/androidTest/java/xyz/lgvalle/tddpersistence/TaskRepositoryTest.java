@@ -68,7 +68,6 @@ public class TaskRepositoryTest {
 
     private void assertTasksExpiringOn(String deadline, Matcher<Iterable<? extends Task>> taskMatcher) throws ParseException {
         Date date = dateFormat.parse(deadline);
-
         assertThat(taskRepository.tasksExpiredBy(date), taskMatcher);
     }
 

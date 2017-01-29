@@ -3,10 +3,6 @@ package xyz.lgvalle.tddpersistence;
 import org.hamcrest.Description;
 import org.hamcrest.TypeSafeMatcher;
 
-/**
- * Created by lgvalle on 14/01/2017.
- */
-
 public class TaskNamedMatcher extends TypeSafeMatcher<Task> {
 
     private String expectedName;
