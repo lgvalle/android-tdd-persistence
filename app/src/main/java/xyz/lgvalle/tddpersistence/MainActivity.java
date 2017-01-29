@@ -14,6 +14,11 @@ import java.util.Date;
 import java.util.List;
 
 import xyz.lgvalle.tddpersistence.db.TaskReaderDbHelper;
+import xyz.lgvalle.tddpersistence.task.Task;
+import xyz.lgvalle.tddpersistence.task.TaskDBStorage;
+import xyz.lgvalle.tddpersistence.task.TaskMapper;
+import xyz.lgvalle.tddpersistence.task.TaskRepository;
+import xyz.lgvalle.tddpersistence.task.TaskStorage;
 
 public class MainActivity extends AppCompatActivity {
 

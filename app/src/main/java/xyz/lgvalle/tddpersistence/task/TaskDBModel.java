@@ -1,4 +1,4 @@
-package xyz.lgvalle.tddpersistence;
+package xyz.lgvalle.tddpersistence.task;
 
 public class TaskDBModel {
 

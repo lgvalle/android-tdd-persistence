@@ -12,6 +12,10 @@ import java.util.Arrays;
 import java.util.List;
 
 import xyz.lgvalle.tddpersistence.db.TaskReaderDbHelper;
+import xyz.lgvalle.tddpersistence.task.Task;
+import xyz.lgvalle.tddpersistence.task.TaskDBStorage;
+import xyz.lgvalle.tddpersistence.task.TaskMapper;
+import xyz.lgvalle.tddpersistence.task.TaskRepository;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;

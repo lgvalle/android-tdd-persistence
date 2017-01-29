@@ -1,4 +1,4 @@
-package xyz.lgvalle.tddpersistence;
+package xyz.lgvalle.tddpersistence.task;
 
 import android.content.ContentValues;
 import android.database.Cursor;
@@ -8,10 +8,8 @@ import android.support.annotation.NonNull;
 import java.util.ArrayList;
 import java.util.List;
 
-import xyz.lgvalle.tddpersistence.db.TaskReaderContract;
 import xyz.lgvalle.tddpersistence.db.TaskReaderDbHelper;
 
-import static xyz.lgvalle.tddpersistence.db.TaskReaderContract.*;
 import static xyz.lgvalle.tddpersistence.db.TaskReaderContract.TaskEntry.*;
 
 
@@ -54,7 +52,6 @@ public class TaskDBStorage implements TaskStorage {
         taskReaderDbHelper.close();
     }
 
-    @NonNull
     private ContentValues toContentValues(TaskDBModel taskDBModel) {
         ContentValues values = new ContentValues();
         values.put(COLUMN_TASK_NAME, taskDBModel.getName());
