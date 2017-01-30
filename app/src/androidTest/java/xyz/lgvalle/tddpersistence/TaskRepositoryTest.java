@@ -75,14 +75,14 @@ public class TaskRepositoryTest {
         );
     }
 
-    private void addTasksToList(ListBuilder listBuilder, final TaskBuilder... tasks) throws Exception {
+    private void addTasksToList(ListBuilder listBuilder, final TaskBuilder... tasks)  {
         for (TaskBuilder taskBuilder : tasks) {
             Task task = taskBuilder.forList(persisted(listBuilder)).build();
             taskRepository.persistTask(task);
         }
     }
 
-    private TestBuilder<List> persisted(final ListBuilder listBuilder) {
+    private TestBuilder<List> persisted(final TestBuilder<List> listBuilder) {
         return new TestBuilder<List>() {
             @Override
             public List build() {
